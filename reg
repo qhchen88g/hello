@@ -1,0 +1,48 @@
+/**
+ * Created by hua on 16-9-11.
+ */
+var reg = {
+    regInit: function(opts) {
+        var appidJson, appid1 = "", appid2 = "", action = 2, gameId, forwardUrl, busiurl, dsfrom, adv, iframeUrl;
+        var o = $.extend({
+            'gameId':''
+            ,pageType: ''
+            ,'cssFile': 'null'
+           , 'width': '100%'
+            ,'height': '100%'
+            ,'regSuccessUrl': 'http://gamehd.yy.com/s/regSuccessRefresh.html'
+            ,'forwardUrl': window.location.href
+        }, opts);
+
+        appidJson = {
+            'gjol': ['5550', '2020']
+            ,'tyl': ['5538', '2022']
+        }
+        if(o.gameId){
+            gameId = o.gameId.toLowerCase();
+            appid1 = appidJson[gameId][0];
+            appid2 = appidJson[gameId][1];
+        }
+
+        if(o.forwardUrl){
+            action = "2";
+            if(o.forwardUrl == window.location.href && window.location.hash){
+                forwardUrl = o.forwardUrl.replace(window.location.hash, "");
+            }else{
+                forwardUrl = o.forwardUrl;
+            }
+            busiurl = encodeURIComponent(o.regSuccessUrl + "?callbackUrl=" + encodeURIComponent(forwardUrl));
+
+        }else{
+            action = "3";
+            busiurl = encodeURIComponent(o.regSuccessUrl);
+        }
+
+        dsfrom = util.getUrlParams("dsfrom") ? util.getUrlParams("dsfrom") : util.cookie.get("yycgame_ds_" + appid2)
+        adv = o.pageType + '@' + dsfrom;
+
+        iframeUrl = 'https://zc.yy.com/reg/game/reg4Game.do?appid=' + appid1 + '&action=' + action + '&mode=game&busiurl=' + busiurl + '&style=' + o.cssFile + '&fromadv='+ adv +'&reqDomainList=lgn.yy.com,lgn.duowan.com,lgn.5153.com';
+        return '<iframe class="reg_iframe" allowtransparency="true" width="' + o.width + '" height="' + o.height + '" frameborder="0" scrolling="no" src="' + iframeUrl + '"></iframe>';
+
+    }
+}
